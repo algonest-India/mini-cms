@@ -1,0 +1,53 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    border: none;
+}
+
+/* Card images in post listing */
+.card img {
+    object-fit: cover;
+    height: 200px;
+    width: 100%;
+    display: block;
+}
+
+/* Post detail page image */
+.post-image {
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+    border-radius: 0.375rem 0.375rem 0 0;
+    background-color: #f8f9fa;
+}
+
+/* Responsive images */
+img {
+    max-width: 100%;
+    height: auto;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.btn-primary, .btn-success {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.post-content {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    word-wrap: break-word;
+}
+
+
+
+

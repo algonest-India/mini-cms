@@ -1,0 +1,27 @@
+{
+  "name": "acme/mini-cms",
+  "description": "Mini CMS with PHP 8.3, PDO MySQL, Bootstrap 5, and OpenAI integration.",
+  "type": "project",
+  "require": {
+    "php": "^8.3",
+    "guzzlehttp/guzzle": "^7.9",
+    "vlucas/phpdotenv": "^5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    },
+    "files": [
+      "src/includes/auth.php"
+    ]
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "@php -r \"file_exists('public/uploads') || mkdir('public/uploads', 0775, true);\""
+    ],
+    "post-update-cmd": [
+      "@php -r \"file_exists('public/uploads') || mkdir('public/uploads', 0775, true);\""
+    ]
+  }
+}
+

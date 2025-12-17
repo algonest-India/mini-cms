@@ -1,4 +1,18 @@
 <?php
+/**
+ * User Dashboard Page
+ *
+ * This page displays a personalized dashboard for logged-in users.
+ * It shows all posts (including the user's own) with management options
+ * like edit and delete. Only authenticated users can access this page.
+ *
+ * Features:
+ * - Login requirement (redirects to login if not authenticated)
+ * - Display all posts with author information
+ * - Edit and delete buttons for each post
+ * - Link to create new posts
+ * - User-specific navigation
+ */
 
 declare(strict_types=1);
 
@@ -8,14 +22,23 @@ use Dotenv\Dotenv;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// Load environment variables
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
+// Require user to be logged in (redirects if not)
 Includes\requireLogin();
 
+// Fetch all posts for display
 $postModel = new Post();
 $posts = $postModel->getAll();
 
+/**
+ * Helper function to escape HTML output for security
+ *
+ * @param string|null $value The string to escape
+ * @return string The escaped string
+ */
 function h(?string $value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');

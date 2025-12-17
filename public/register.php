@@ -1,4 +1,17 @@
 <?php
+/**
+ * User Registration Page
+ *
+ * This page allows new users to create accounts in the Mini CMS.
+ * It validates input, checks for existing emails, and creates user accounts
+ * with securely hashed passwords.
+ *
+ * Security Features:
+ * - CSRF token validation
+ * - Password hashing with bcrypt
+ * - Email uniqueness validation
+ * - Input sanitization and validation
+ */
 
 declare(strict_types=1);
 
@@ -7,25 +20,32 @@ use Dotenv\Dotenv;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// Load environment variables
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
+// Initialize variables for form handling
 $errors = [];
 $success = false;
 
+// Process registration form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $csrf = $_POST['csrf_token'] ?? '';
 
+    // Verify CSRF token
     if (!Includes\verify_csrf($csrf)) {
         $errors[] = 'Invalid CSRF token.';
     }
+
+    // Validate required fields
     if ($name === '' || $email === '' || $password === '') {
         $errors[] = 'All fields are required.';
     }
 
+    // Attempt registration if no validation errors
     if (!$errors) {
         if (Includes\registerUser($name, $email, $password)) {
             $success = true;

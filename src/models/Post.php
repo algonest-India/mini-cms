@@ -1,4 +1,11 @@
 <?php
+/**
+ * Post Model
+ *
+ * This class handles all database operations related to blog posts in the Mini CMS.
+ * It provides methods for creating, reading, updating, and deleting posts.
+ * Posts are associated with users and can include images.
+ */
 
 declare(strict_types=1);
 
@@ -11,17 +18,31 @@ final class Post
 {
     private PDO $db;
 
+    /**
+     * Constructor - Initializes database connection.
+     */
     public function __construct()
     {
         $this->db = Database::getInstance();
     }
 
+    /**
+     * Retrieves all posts with author information, ordered by creation date (newest first).
+     *
+     * @return array Array of post data including author names
+     */
     public function getAll(): array
     {
         $stmt = $this->db->query('SELECT p.*, u.name AS author FROM posts p LEFT JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC');
         return $stmt->fetchAll();
     }
 
+    /**
+     * Finds a specific post by ID with author information.
+     *
+     * @param int $id The post ID
+     * @return array|null Post data or null if not found
+     */
     public function find(int $id): ?array
     {
         $stmt = $this->db->prepare('SELECT p.*, u.name AS author FROM posts p LEFT JOIN users u ON p.user_id = u.id WHERE p.id = :id LIMIT 1');
@@ -30,6 +51,15 @@ final class Post
         return $post ?: null;
     }
 
+    /**
+     * Creates a new post in the database.
+     *
+     * @param string $title Post title
+     * @param string $content Post content
+     * @param string|null $image Optional image filename
+     * @param int $userId ID of the user creating the post
+     * @return bool True on success, false on failure
+     */
     public function create(string $title, string $content, ?string $image, int $userId): bool
     {
         $stmt = $this->db->prepare(
@@ -45,6 +75,15 @@ final class Post
         ]);
     }
 
+    /**
+     * Updates an existing post.
+     *
+     * @param int $id Post ID to update
+     * @param string $title New title
+     * @param string $content New content
+     * @param string|null $image Optional new image filename (null to keep existing)
+     * @return bool True on success, false on failure
+     */
     public function update(int $id, string $title, string $content, ?string $image = null): bool
     {
         $sql = 'UPDATE posts SET title = :title, content = :content, updated_at = NOW()';
@@ -64,6 +103,12 @@ final class Post
         return $stmt->execute($params);
     }
 
+    /**
+     * Deletes a post from the database.
+     *
+     * @param int $id Post ID to delete
+     * @return bool True on success, false on failure
+     */
     public function delete(int $id): bool
     {
         $stmt = $this->db->prepare('DELETE FROM posts WHERE id = :id');

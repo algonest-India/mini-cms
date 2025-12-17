@@ -1,4 +1,17 @@
 <?php
+/**
+ * User Login Page
+ *
+ * This page handles user authentication for the Mini CMS.
+ * It processes login form submissions, validates credentials,
+ * and redirects authenticated users to the dashboard.
+ *
+ * Security Features:
+ * - CSRF token validation
+ * - Password verification using bcrypt
+ * - Session regeneration on successful login
+ * - Input sanitization and validation
+ */
 
 declare(strict_types=1);
 
@@ -7,23 +20,30 @@ use Dotenv\Dotenv;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// Load environment variables
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
+// Initialize error array for form validation messages
 $errors = [];
+
+// Process login form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $csrf = $_POST['csrf_token'] ?? '';
 
+    // Verify CSRF token to prevent cross-site request forgery
     if (!Includes\verify_csrf($csrf)) {
         $errors[] = 'Invalid CSRF token.';
     }
 
+    // Attempt login if no errors so far
     if (!$errors && !Includes\loginUser($email, $password)) {
         $errors[] = 'Invalid email or password.';
     }
 
+    // Redirect to dashboard on successful login
     if (!$errors) {
         header('Location: /dashboard.php');
         exit;
